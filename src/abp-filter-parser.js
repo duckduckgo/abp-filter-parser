@@ -524,7 +524,8 @@ function hasMatchingFilters(filterList, parsedFilterData, input, contextParams, 
       cachedInputData.matchedFilters[foundFilter.rawFilter]  = { matches: 1 };
     }
 
-    fs.writeFileSync('easylist-matches.json', JSON.stringify(cachedInputData.matchedFilters), 'utf-8');
+    // can't write to local files like this
+    //fs.writeFileSync('easylist-matches.json', JSON.stringify(cachedInputData.matchedFilters), 'utf-8');
   }
   return !!foundFilter;
 }
