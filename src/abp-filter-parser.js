@@ -210,8 +210,15 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   parsedFilterData.isRegex = input[beginIndex] === '/' &&
     input[input.length - 1] === '/' && beginIndex !== input.length - 1;
   if (parsedFilterData.isRegex) {
-    parsedFilterData.data = input.slice(beginIndex + 1, -1);
-    return true;
+      
+      // check for escaped forward slashes
+      if (input.match(/\/$/)) {
+          parsedFilterData.data = input.slice(beginIndex + 1);
+      } else {
+          parsedFilterData.data = input.slice(beginIndex + 1, -1);
+      }
+      
+      return true;
   }
 
   // Check if there's some kind of anchoring
