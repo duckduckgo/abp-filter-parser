@@ -197,7 +197,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   }
 
   // Check for options, regex can have options too so check this before regex
-  index = input.indexOf('$', beginIndex);
+  index = input.lastIndexOf('$');
   if (index !== -1) {
     parsedFilterData.options = parseOptions(input.substring(index + 1));
     // Get rid of the trailing options for the rest of the parsing
@@ -210,14 +210,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   parsedFilterData.isRegex = input[beginIndex] === '/' &&
     input[input.length - 1] === '/' && beginIndex !== input.length - 1;
   if (parsedFilterData.isRegex) {
-      
-      // check for escaped forward slashes
-      if (input.match(/\/$/)) {
-          parsedFilterData.data = input.slice(beginIndex + 1);
-      } else {
-          parsedFilterData.data = input.slice(beginIndex + 1, -1);
-      }
-      
+      parsedFilterData.data = input.slice(beginIndex + 1, -1);
       return true;
   }
 
