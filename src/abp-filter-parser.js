@@ -284,7 +284,7 @@ export function parse(input, parserData) {
         parserData.htmlRuleFilters.push(parsedFilterData);
       } else if (parsedFilterData.isException) {
         parserData.exceptionFilters.push(parsedFilterData);
-      } else if (fingerprint.length > 0 && !input.match(/\*/)) {
+      } else if (fingerprint.length > 0 && !parsedFilterData.rawFilter.match(/\*/)) {
         parserData.filters.push(parsedFilterData);
       } else {
         parserData.noFingerprintFilters.push(parsedFilterData);
