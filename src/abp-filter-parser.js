@@ -477,8 +477,8 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
       indexOfFilter(input, parsedFilterData.data) !== -1;
   }
 
-  let wildcardMiss = wildcardMatch(parsedFilterData, input)
-  if (wildcardMiss) return false
+  let wildcardMatch = wildcardMatch(parsedFilterData, input)
+  if (!wildcardMatch) return false
 
   return true;
 }
