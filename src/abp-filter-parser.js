@@ -477,6 +477,13 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
       indexOfFilter(input, parsedFilterData.data) !== -1;
   }
 
+  let wildcardMiss = wildcardMatch(parsedFilterData, input)
+  if (wildcardMiss) return false
+
+  return true;
+}
+
+function wildcardMatch() {
   // Wildcard match comparison
   let parts = parsedFilterData.data.split('*');
   let index = 0;
@@ -487,8 +494,7 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
     }
     index = newIndex + part.length;
   }
-
-  return true;
+  return true
 }
 
 function discoverMatchingPrefix(array, bloomFilter, str, prefixLen = fingerprintSize) {
