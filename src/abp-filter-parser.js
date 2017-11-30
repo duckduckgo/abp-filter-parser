@@ -239,7 +239,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   // Use the host bloom filter if the filter is a host anchored filter rule with no other data
   if (exceptionBloomFilter && parsedFilterData.isException) {
     exceptionBloomFilter.add(getFingerprint(parsedFilterData.data));
-  } else if (bloomFilter) {
+  } else if (bloomFilter && !parsedFilterData.rawFilter.match(/\*/)) {
     // To check for duplicates
     //if (bloomFilter.exists(getFingerprint(parsedFilterData.data))) {
       // console.log('duplicate found for data: ' + getFingerprint(parsedFilterData.data));
