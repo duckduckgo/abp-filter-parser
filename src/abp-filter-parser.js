@@ -483,7 +483,7 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
   return true;
 }
 
-function wildcardMatch() {
+function wildcardMatch(parsedFilterData, input) {
   // Wildcard match comparison
   let parts = parsedFilterData.data.split('*');
   let index = 0;
