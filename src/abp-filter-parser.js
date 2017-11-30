@@ -482,6 +482,7 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
         } else {
             return indexOfFilter(input, parsedFilterData.data) !== -1;
         }
+    }
   }
 
   if (!wildcardMatch(parsedFilterData, input)) return false
