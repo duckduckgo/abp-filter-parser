@@ -239,7 +239,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   // Use the host bloom filter if the filter is a host anchored filter rule with no other data
   if (exceptionBloomFilter && parsedFilterData.isException) {
     exceptionBloomFilter.add(getFingerprint(parsedFilterData.data));
-  } else if (bloomFilter && !parsedFilterData.rawFilter.match(/\*/)) {
+  } else if (bloomFilter) {
     // To check for duplicates
     //if (bloomFilter.exists(getFingerprint(parsedFilterData.data))) {
       // console.log('duplicate found for data: ' + getFingerprint(parsedFilterData.data));
@@ -284,7 +284,7 @@ export function parse(input, parserData) {
         parserData.htmlRuleFilters.push(parsedFilterData);
       } else if (parsedFilterData.isException) {
         parserData.exceptionFilters.push(parsedFilterData);
-      } else if (fingerprint.length > 0 && !parsedFilterData.rawFilter.match(/\*/)) {
+      } else if (fingerprint.length > 0 && !parsedFilterData.rawFilterimatch(/\*/)) {
         parserData.filters.push(parsedFilterData);
       } else {
         parserData.noFingerprintFilters.push(parsedFilterData);
@@ -496,7 +496,7 @@ function discoverMatchingPrefix(array, bloomFilter, str, prefixLen = fingerprint
     let sub = str.substring(i, i + prefixLen);
     if (bloomFilter.exists(sub)) {
       array.push({ badFingerprint: sub, src: str});
-      // console.log('bad-fingerprint:', sub, 'for url:', str);
+      console.log('bad-fingerprint:', sub, 'for url:', str);
     } else {
       // console.log('good-fingerprint:', sub, 'for url:', str);
     }
