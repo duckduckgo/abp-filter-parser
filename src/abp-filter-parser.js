@@ -473,8 +473,15 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
       cachedInputData.currentHost = getUrlHost(input);
     }
 
-    return !isThirdPartyHost(parsedFilterData.host, cachedInputData.currentHost) &&
-      indexOfFilter(input, parsedFilterData.data) !== -1;
+    // domain anchored, first check if we're on the correct domain
+    if(!isThirdPartyHost(parsedFilterData.host, cachedInputData.currentHost)) {
+        // check wildcard filters
+        if (parsedFilterData.rawFilter.match(/\*/)) {
+            return wildcardMatch(parsedFilterData, input)
+        // or check normal filtes
+        } else {
+            return indexOfFilter(input, parsedFilterData.data) !== -1;
+        }
   }
 
   if (!wildcardMatch(parsedFilterData, input)) return false
