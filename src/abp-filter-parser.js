@@ -512,7 +512,7 @@ function discoverMatchingPrefix(array, bloomFilter, str, prefixLen = fingerprint
     let sub = str.substring(i, i + prefixLen);
     if (bloomFilter.exists(sub)) {
       array.push({ badFingerprint: sub, src: str});
-      console.log('bad-fingerprint:', sub, 'for url:', str);
+      // console.log('bad-fingerprint:', sub, 'for url:', str);
     } else {
       // console.log('good-fingerprint:', sub, 'for url:', str);
     }
