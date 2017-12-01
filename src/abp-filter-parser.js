@@ -482,7 +482,8 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
         } else {
             return indexOfFilter(input, parsedFilterData.data) !== -1;
         }
-
+    } else {
+        // fails domain anchor check
         return false
     }
   }
