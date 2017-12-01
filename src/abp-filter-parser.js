@@ -482,6 +482,8 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
         } else {
             return indexOfFilter(input, parsedFilterData.data) !== -1;
         }
+
+        return false
     }
   }
 
