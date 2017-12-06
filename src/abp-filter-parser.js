@@ -478,7 +478,7 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
         // check wildcard filters
         if (parsedFilterData.rawFilter.match(/\*/)) {
             return wildcardMatch(parsedFilterData, input)
-        // or check normal filtes
+        // or check normal filters
         } else {
             return indexOfFilter(input, parsedFilterData.data) !== -1;
         }
