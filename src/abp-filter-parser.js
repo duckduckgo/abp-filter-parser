@@ -197,7 +197,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   }
 
   // Check for options, regex can have options too so check this before regex
-  index = input.indexOf('$', beginIndex);
+  index = input.lastIndexOf('$');
   if (index !== -1) {
     parsedFilterData.options = parseOptions(input.substring(index + 1));
     // Get rid of the trailing options for the rest of the parsing
@@ -210,14 +210,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
   parsedFilterData.isRegex = input[beginIndex] === '/' &&
     input[input.length - 1] === '/' && beginIndex !== input.length - 1;
   if (parsedFilterData.isRegex) {
-      
-      // check for escaped forward slashes
-      if (input.match(/\/$/)) {
-          parsedFilterData.data = input.slice(beginIndex + 1);
-      } else {
-          parsedFilterData.data = input.slice(beginIndex + 1, -1);
-      }
-      
+      parsedFilterData.data = input.slice(beginIndex + 1, -1);
       return true;
   }
 
@@ -480,10 +473,27 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
       cachedInputData.currentHost = getUrlHost(input);
     }
 
-    return !isThirdPartyHost(parsedFilterData.host, cachedInputData.currentHost) &&
-      indexOfFilter(input, parsedFilterData.data) !== -1;
+    // domain anchored, first check if we're on the correct domain
+    if(!isThirdPartyHost(parsedFilterData.host, cachedInputData.currentHost)) {
+        // check wildcard filters
+        if (parsedFilterData.rawFilter.match(/\*/)) {
+            return wildcardMatch(parsedFilterData, input)
+        // or check normal filters
+        } else {
+            return indexOfFilter(input, parsedFilterData.data) !== -1;
+        }
+    } else {
+        // fails domain anchor check
+        return false
+    }
   }
 
+  if (!wildcardMatch(parsedFilterData, input)) return false
+
+  return true;
+}
+
+function wildcardMatch(parsedFilterData, input) {
   // Wildcard match comparison
   let parts = parsedFilterData.data.split('*');
   let index = 0;
@@ -494,8 +504,7 @@ export function matchesFilter(parsedFilterData, input, contextParams = {}, cache
     }
     index = newIndex + part.length;
   }
-
-  return true;
+  return true
 }
 
 function discoverMatchingPrefix(array, bloomFilter, str, prefixLen = fingerprintSize) {
@@ -585,7 +594,7 @@ export function matches(parserData, input, contextParams = {}, cachedInputData =
     // Check for exceptions only when there's a match because matches are
     // rare compared to the volume of checks
     let exceptionBloomFilterMiss = parserData.exceptionBloomFilter && !parserData.exceptionBloomFilter.substringExists(cleanedInput, fingerprintSize);
-    if (!exceptionBloomFilterMiss || hasMatchingFilters(parserData.exceptionFilters, parserData, input, contextParams, cachedInputData)) {
+    if (!exceptionBloomFilterMiss && hasMatchingFilters(parserData.exceptionFilters, parserData, input, contextParams, cachedInputData)) {
       cachedInputData.notMatchCount++;
       return false;
     }
