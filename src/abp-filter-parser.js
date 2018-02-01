@@ -227,7 +227,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
       parsedFilterData.host = input.substring(beginIndex, indexOfSep);
       // remove wildcard from host name.
       // Fixes bug with filters like: ||facebook.com*/impression_logging/
-      parsedFilterData.host.remove('*', '');
+      parsedFilterData.host.replace('*', '');
 
     } else {
       parsedFilterData.leftAnchored = true;
