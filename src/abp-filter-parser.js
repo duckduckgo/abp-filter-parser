@@ -225,6 +225,10 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
       }
       beginIndex += 2;
       parsedFilterData.host = input.substring(beginIndex, indexOfSep);
+      // remove wildcard from host name.
+      // Fixes bug with filters like: ||facebook.com*/impression_logging/
+      parsedFilterData.host.remove('*', '');
+
     } else {
       parsedFilterData.leftAnchored = true;
       beginIndex++;
