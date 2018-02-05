@@ -173,7 +173,7 @@ export function parseFilter(input, parsedFilterData, bloomFilter, exceptionBloom
 
   // Check for comments
   let beginIndex = 0;
-  if (input[beginIndex] === '[' || input[beginIndex] === '!') {
+  if (input[beginIndex] === '[' || input[beginIndex] === '!' || (input[beginIndex] === '#' && input[beginIndex + 1] === ' ')) {
     parsedFilterData.isComment = true;
     return false;
   }
