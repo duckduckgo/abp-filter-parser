@@ -18,6 +18,9 @@ export const elementTypes = {
   OTHER: 0o400,
 };
 
+let filterDebugging = false
+export let setFilterDebugging = function(debug) { if(debug) filterDebugging = debug}
+
 // Maximum number of cached entries to keep for subsequent lookups
 const maxCached = 100;
 
@@ -26,7 +29,6 @@ const maxUrlChars = 100;
 
 // Exact size for fingerprints, if you change also change fingerprintRegexs
 const fingerprintSize = 8;
-
 // Regexes used to create fingerprints
 // There's more than one because sometimes a fingerprint is determined to be a bad
 // one and would lead to a lot of collisions in the bloom filter). In those cases
@@ -545,6 +547,12 @@ function hasMatchingFilters(filterList, parsedFilterData, input, contextParams, 
   const foundFilter = filterList.find(parsedFilterData2 =>
     matchesFilter(parsedFilterData2, input, contextParams, cachedInputData));
   if (foundFilter && cachedInputData.matchedFilters && foundFilter.rawFilter) {
+
+    // debug logging for matched filters. To turn this on run this in the extension console
+    // abp.setFilterDebugging(true)
+    if (filterDebugging) {
+        console.log("FOUND FILTER\n" + "Request: " + input + "\n" + "Filter: " + foundFilter) 
+    }
 
     // increment the count of matches
     // we store an extra object and a count so that in the future
