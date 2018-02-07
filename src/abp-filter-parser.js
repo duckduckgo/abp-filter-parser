@@ -124,7 +124,7 @@ export function parseOptions(input) {
 
       // unsupported options: this can include unsupported request types since they
       // fall through the if(elementTypeMaskMap) above
-      if (!(supportedOptions[option] || elementTypeMaskMap.has(option))) {
+      if (!(supportedOptions[optionWithoutPrefix] || elementTypeMaskMap.has(optionWithoutPrefix))) {
           if (!output.unsupported) {
               output.unsupported = []
           }
