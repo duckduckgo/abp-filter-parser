@@ -124,8 +124,11 @@ export function parseOptions(input) {
 
       // unsupported options: this can include request types since they
       // fall through the if(elementTypeMaskMap) above
-      if (!supportedOptions[option]) {
-          output.unsupported = true
+      if (!(supportedOptions[option] && elementTypeMaskMap.has(option)) {
+          if (!output.unsupported) {
+              output.unsupported = []
+          }
+          output.unsupported.push(option)
       }
 
       output.binaryOptions.add(option);
@@ -455,7 +458,7 @@ function matchOptions(parsedFilterData, input, contextParams = {}) {
  * Given an individual parsed filter data determines if the input url should block.
  */
 export function matchesFilter(parsedFilterData, input, contextParams = {}, cachedInputData = {}) {
-  if (parsedFilterData.options && parsedFilterData.options.unsuported) {
+  if (parsedFilterData.options && parsedFilterData.options.unsupported) {
       return false
   }
 
