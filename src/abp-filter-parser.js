@@ -455,7 +455,7 @@ function matchOptions(parsedFilterData, input, contextParams = {}) {
  * Given an individual parsed filter data determines if the input url should block.
  */
 export function matchesFilter(parsedFilterData, input, contextParams = {}, cachedInputData = {}) {
-  if (parsedFilterData.unsuported) {
+  if (parsedFilterData.options && parsedFilterData.options.unsuported) {
       return false
   }
 
