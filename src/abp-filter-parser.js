@@ -551,7 +551,7 @@ function hasMatchingFilters(filterList, parsedFilterData, input, contextParams, 
     // debug logging for matched filters. To turn this on run this in the extension console
     // abp.setFilterDebugging(true)
     if (filterDebugging) {
-        console.log("FOUND FILTER\n" + "Request: " + input + "\n" + "Filter: " + foundFilter) 
+        console.log("FOUND FILTER\n" + "Request: " + input + "\n" + "Filter: " + JSON.stringify(foundFilter))
     }
 
     // increment the count of matches
