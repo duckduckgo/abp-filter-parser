@@ -104,6 +104,9 @@ export function parseOptions(input) {
   let output = {
     binaryOptions: new Set(),
   };
+
+  let supportedOptions = {'third-party': 1}
+
   input.split(',').forEach((option) => {
     option = option.trim();
     if (option.startsWith('domain=')) {
@@ -118,7 +121,15 @@ export function parseOptions(input) {
           output.elementTypeMask |= elementTypeMaskMap.get(optionWithoutPrefix);
         }
       }
+
+      // unsupported options: this can include request types since they
+      // fall through the if(elementTypeMaskMap) above
+      if (!supportedOptions[option]) {
+          output.unsupported = true
+      }
+
       output.binaryOptions.add(option);
+
     }
   });
   return output;
@@ -444,6 +455,10 @@ function matchOptions(parsedFilterData, input, contextParams = {}) {
  * Given an individual parsed filter data determines if the input url should block.
  */
 export function matchesFilter(parsedFilterData, input, contextParams = {}, cachedInputData = {}) {
+  if (parsedFilterData.unsuported) {
+      return false
+  }
+
   if (!matchOptions(parsedFilterData, input, contextParams)) {
     return false;
   }
