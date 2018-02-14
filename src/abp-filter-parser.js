@@ -107,7 +107,7 @@ export function parseOptions(input) {
     binaryOptions: new Set(),
   };
 
-  let supportedOptions = {'third-party': 1}
+  let optionSupport = {'third-party': 1, '~third-party': 0}
 
   input.split(',').forEach((option) => {
     option = option.trim();
@@ -126,7 +126,7 @@ export function parseOptions(input) {
 
       // unsupported options: this can include unsupported request types since they
       // fall through the if(elementTypeMaskMap) above
-      if (!(supportedOptions[optionWithoutPrefix] || elementTypeMaskMap.has(optionWithoutPrefix))) {
+      if (!(optionSupport[option] || elementTypeMaskMap.has(optionWithoutPrefix))) {
           if (!output.unsupported) {
               output.unsupported = []
           }
