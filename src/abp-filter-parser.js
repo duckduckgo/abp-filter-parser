@@ -18,6 +18,9 @@ export const elementTypes = {
   OTHER: 0o400,
 };
 
+let filterDebugging = false
+export let setFilterDebugging = function(debug) { if(debug) filterDebugging = debug}
+
 // Maximum number of cached entries to keep for subsequent lookups
 const maxCached = 100;
 
@@ -26,7 +29,6 @@ const maxUrlChars = 100;
 
 // Exact size for fingerprints, if you change also change fingerprintRegexs
 const fingerprintSize = 8;
-
 // Regexes used to create fingerprints
 // There's more than one because sometimes a fingerprint is determined to be a bad
 // one and would lead to a lot of collisions in the bloom filter). In those cases
@@ -104,6 +106,9 @@ export function parseOptions(input) {
   let output = {
     binaryOptions: new Set(),
   };
+
+  let optionSupport = {'third-party': 1, '~third-party': 0}
+
   input.split(',').forEach((option) => {
     option = option.trim();
     if (option.startsWith('domain=')) {
@@ -118,7 +123,18 @@ export function parseOptions(input) {
           output.elementTypeMask |= elementTypeMaskMap.get(optionWithoutPrefix);
         }
       }
+
+      // unsupported options: this can include unsupported request types since they
+      // fall through the if(elementTypeMaskMap) above
+      if (!(optionSupport[option] || elementTypeMaskMap.has(optionWithoutPrefix))) {
+          if (!output.unsupported) {
+              output.unsupported = []
+          }
+          output.unsupported.push(option)
+      }
+
       output.binaryOptions.add(option);
+
     }
   });
   return output;
@@ -444,6 +460,10 @@ function matchOptions(parsedFilterData, input, contextParams = {}) {
  * Given an individual parsed filter data determines if the input url should block.
  */
 export function matchesFilter(parsedFilterData, input, contextParams = {}, cachedInputData = {}) {
+  if (parsedFilterData.options && parsedFilterData.options.unsupported) {
+      return false
+  }
+
   if (!matchOptions(parsedFilterData, input, contextParams)) {
     return false;
   }
@@ -527,6 +547,12 @@ function hasMatchingFilters(filterList, parsedFilterData, input, contextParams, 
   const foundFilter = filterList.find(parsedFilterData2 =>
     matchesFilter(parsedFilterData2, input, contextParams, cachedInputData));
   if (foundFilter && cachedInputData.matchedFilters && foundFilter.rawFilter) {
+
+    // debug logging for matched filters. To turn this on run this in the extension console
+    // abp.setFilterDebugging(true)
+    if (filterDebugging) {
+        console.log(`Matched Filter\nList name: ${contextParams.listName}\nRequest: ${input}\nFilter: ${JSON.stringify(foundFilter)}`)
+    }
 
     // increment the count of matches
     // we store an extra object and a count so that in the future
